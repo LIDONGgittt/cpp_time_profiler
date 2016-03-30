@@ -55,20 +55,37 @@ public:
     {
         return measurements_.size();
     }
+    
+    
+    /// Computes the overall duration of all measurements.
+    /// Unit: [µs].
+    boost::chrono::microseconds get_overall_duration() const
+    {
+        boost::chrono::microseconds overall_duration(0);
+        for (int i = 0; i < measurements_.size(); i++)
+            overall_duration += measurements_[i].get_duration();
+            
+        return overall_duration;
+    }
 
 
     /// Computes the average time of all measurements.
     /// Unit: [µs].
     boost::chrono::microseconds get_average_duration() const
     {
-        boost::chrono::microseconds average_duration(0);
-        for (int i = 0; i < measurements_.size(); i++)
-            average_duration += measurements_[i].get_duration();
-
+        boost::chrono::microseconds average_duration(get_overall_duration());
+        
         if (measurements_.size() > 0)
-            return average_duration / measurements_.size();
-        else
-            return average_duration;
+            average_duration /= measurements_.size();
+        
+        return average_duration;
+    }
+    
+    
+    /// Compares measurements based on their overall time consumption.
+    bool operator<(const MultiMeasurement& rhs) const
+    {
+        return get_overall_duration() < rhs.get_overall_duration();
     }
 };
 

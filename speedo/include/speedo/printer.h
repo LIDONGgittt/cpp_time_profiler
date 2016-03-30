@@ -14,19 +14,22 @@ private:
     std::vector<MultiMeasurement> measurements_;
 
     /// Width of the output lines.
-    static const int line_width         = 80;
+    static const int line_width              = 80;
 
     /// Width of the column indicating the file of a checkpoint.
-    static const int file_header_width  = 30;
+    static const int file_col_width          = 30;
 
     /// Width of the column indicating the line of a checkpoint.
-    static const int line_header_width  = 10;
+    static const int line_col_width          =  6;
 
     /// Width of the column indicating the count of a measurement.
-    static const int count_header_width = 10;
+    static const int count_col_width         = 10;
 
-    /// Width of the column indicating the duration of a measurement.
-    static const int time_header_width  = 30;
+    /// Width of the column indicating the average duration of a measurement.
+    static const int avg_duration_col_width  = 15;
+    
+    /// Width of the column indicating the overall duration of a measurement.
+    static const int ovr_duration_col_width  = 15;
 
 
 public:
@@ -69,7 +72,7 @@ private:
         std::cerr << std::setfill(fill)
                   << std::setw(line_width) << fill << std::endl
                   << std::setw((line_width-title.length()) / 2) << fill << title
-                  << (title.length() % 2 > 0 ? std::string(&fill) : "")
+                  << (title.length() % 2 > 0 ? std::string(1, fill) : "")
                   << std::setw((line_width-title.length()) / 2) << fill << std::endl
                   << std::setw(line_width) << fill << std::endl;
     }
@@ -79,10 +82,16 @@ private:
     static void print_header()
     {
         std::cerr << std::setfill(' ')
-                  << std::setw(file_header_width)  << std::left << "File"
-                  << std::setw(line_header_width)  << std::left << "|  Line"
-                  << std::setw(count_header_width) << std::left << "|  Hits"
-                  << "|" << std::setw(time_header_width-1) << std::right << "Average duration [us]"
+                  << std::setw(file_col_width)         << std::left  
+                  << "File"                            << "|" 
+                  << std::setw(line_col_width)         << std::right 
+                  << "Line "                           << "|" 
+                  << std::setw(count_col_width)        << std::right 
+                  << "Count "                          << "|"
+                  << std::setw(avg_duration_col_width) << std::right 
+                  << "Average [us] "                   << "|"
+                  << std::setw(ovr_duration_col_width) << std::right 
+                  << "Overall [us]"
                   << std::endl;
 
         print_hline('=');
@@ -95,23 +104,34 @@ private:
         // Print where the measurement started.
         const std::string file_start(crop_path(measurement.get_start().get_file()));
         std::cerr << std::setfill(' ')
-                  << std::setw(file_header_width) << std::left  << file_start
-                  << "|" << std::setw(line_header_width-1)  << std::right
-                  << measurement.get_start().get_line()
-                  << "|" << std::setw(count_header_width-1) << std::right << " "
-                  << "|" << std::endl;
+                  << std::setw(file_col_width)          << std::left  
+                  << file_start                         << "|"
+                  << std::setw(line_col_width)          << std::right 
+                  << measurement.get_start().get_line() << "|"
+                  << std::setw(count_col_width)         << std::right 
+                  << " "                                << "|"
+                  << std::setw(avg_duration_col_width)  << std::right 
+                  << " "                                << "|"
+                  << std::endl;
 
-        // Print where the measurement ended and how long it took.
+        // Print the file name in the second line only if it 
+        // is a different file.
         std::string file_end(crop_path(measurement.get_end().get_file()));
         if (file_start == file_end)
             file_end.clear();
-        std::cerr << std::setw(file_header_width) << std::left  << file_end
-                  << "|" << std::setw(line_header_width-1)  << std::right
-                  << measurement.get_end().get_line()
-                  << "|" << std::setw(count_header_width-1) << std::right
-                  << measurement.count()
-                  << "|" << std::setw(time_header_width-1)  << std::right
-                  << insert_separators(measurement.get_average_duration().count())
+            
+        // Print where the measurement ended and how long it took.            
+        std::cerr << std::setfill(' ')
+                  << std::setw(file_col_width)                  << std::left  
+                  << file_end                                   << "|"
+                  << std::setw(line_col_width)                  << std::right 
+                  << measurement.get_end().get_line()           << "|"
+                  << std::setw(count_col_width)                 << std::right 
+                  << measurement.count()                        << "|"
+                  << std::setw(avg_duration_col_width)          << std::right 
+                  << measurement.get_average_duration().count() << "|"
+                  << std::setw(ovr_duration_col_width)          << std::right
+                  << measurement.get_overall_duration().count() 
                   << std::endl;
     }
 
