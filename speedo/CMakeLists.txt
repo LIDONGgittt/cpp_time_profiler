@@ -5,7 +5,7 @@ project(speedo)
 find_package(catkin REQUIRED)
 
 # Find Boost.
-find_package(Boost REQUIRED COMPONENTS system chrono)
+find_package(Boost REQUIRED COMPONENTS system chrono filesystem date_time)
 
 # Generate catkin config file so other packages can find Speedo.
 catkin_package(

@@ -3,6 +3,11 @@
 
 #include <iomanip>
 #include <sstream>
+
+#include <boost/filesystem.hpp>
+#include <boost/date_time/posix_time/posix_time.hpp>
+#include <boost/date_time/posix_time/posix_time_io.hpp>
+
 #include "speedo/multi_measurement.h"
 
 
@@ -129,9 +134,9 @@ private:
                   << std::setw(count_col_width)                 << std::right 
                   << measurement.count()                        << "|"
                   << std::setw(avg_duration_col_width)          << std::right 
-                  << measurement.get_average_duration().count() << "|"
+                  << insert_separators(measurement.get_average_duration().count()) << "|"
                   << std::setw(ovr_duration_col_width)          << std::right
-                  << measurement.get_overall_duration().count() 
+                  << insert_separators(measurement.get_overall_duration().count()) 
                   << std::endl;
     }
 
@@ -162,6 +167,25 @@ private:
         }
 
         return stream.str();
+    }
+    
+    
+    /// Saves the current profiling information to \c $HOME/.speedo/log.
+    static void save_log()
+    {
+        // Create the folder name.
+        std::stringstream folder_name;
+        folder_name << getenv("HOME") << "/.speedo/log";
+        boost::filesystem::path folder_path(folder_name.str());
+        
+        // Create the folder.
+        boost::filesystem::create_directories(folder_path);
+        
+        // Create the name of the log file from the current date and time.
+        std::stringstream file_name;
+        boost::posix_time::time_facet* facet(new boost::posix_time::time_facet("%Y%m%d-%H%M%S"));
+        file_name.imbue(std::locale(file_name.getloc(), facet));
+        file_name << boost::posix_time::second_clock::local_time() << ".log";
     }
 };
 
