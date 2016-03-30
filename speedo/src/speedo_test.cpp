@@ -6,7 +6,7 @@
 int main()
 {
 ___ for (int j = 0; j < 20; j++)
-       for (long int i = 0; i < 10000000; ++i)
+___    for (long int i = 0; i < 10000000; ++i)
             ;
 ___
     for (long int i = 0; i < 10000000; ++i)

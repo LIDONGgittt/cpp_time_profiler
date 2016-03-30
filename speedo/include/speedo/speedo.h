@@ -47,10 +47,12 @@ private:
 
 
     /// Destructor.
-    /// Computes and prints the collected statistics.
+    /// Computes and prints the collected statistics and saves them to a 
+    /// log file: \c $HOME/.speedo/log.
     ~Speedo()
     {
         print_statistics();
+        save_log();
     }
 
 
@@ -65,25 +67,18 @@ private:
 
 
     /// Returns the singleton instance of the profiler.
-    static Speedo& get_instance()
+    static Speedo& get_instance() 
     {
         // Create the single instance of this class.
         static Speedo speedo;
         return speedo;
     }
-
-
-public:
-    /// Adds a measurement.
-    static void tick(const std::string& file, int line, const std::string& function)
-    {
-        // Add the measurement point.
-        get_instance().checkpoints_.push_back(Checkpoint(file, line, function));
-    }
-
-
-    /// Prints the statistics.
-    static void print_statistics()
+    
+    
+    /// Returns a sorted list of the measurements that were made.
+    /// The measurements are sorted with respect to the overall execution time
+    /// in descending order.
+    static std::list<MultiMeasurement> sort_measurements()
     {
         // Create a map that contains all measurements arranged by the hashes
         // of their file-line pairs.
@@ -108,7 +103,7 @@ public:
         
         // Copy the map elements into a list that can be sorted.
         std::list<MultiMeasurement> measurement_list;
-        std::map<std::size_t, MultiMeasurement>::iterator mit;
+        std::map<std::size_t, MultiMeasurement>::const_iterator mit;
         for (mit = measurement_map.begin(); mit != measurement_map.end(); mit++)
             measurement_list.push_back(mit->second);
             
@@ -116,14 +111,38 @@ public:
         // starting with the largest value.
         measurement_list.sort();
         measurement_list.reverse();
+        
+        return measurement_list;
+    }
 
-        // Iterate over the list and print all measurements.
+
+public:
+    /// Adds a measurement.
+    static void tick(const std::string& file, int line, const std::string& function)
+    {
+        // Add the measurement point.
+        get_instance().checkpoints_.push_back(Checkpoint(file, line, function));
+    }
+
+
+    /// Prints the statistics.
+    static void print_statistics()
+    {
+        // Print the sorted list of all measurements.
         Printer printer;
-        std::list<MultiMeasurement>::iterator lit;
-        for (lit = measurement_list.begin(); lit != measurement_list.end(); lit++)
-            printer.add(*lit);
+        printer.add(sort_measurements());
 
         printer.print();
+    }
+    
+    
+    /// Saves a log file with the statistics under \c $HOME/.speedo/log.
+    static void save_log()
+    {
+        Printer printer;
+        printer.add(sort_measurements());
+        
+        printer.save_log();
     }
 };
 

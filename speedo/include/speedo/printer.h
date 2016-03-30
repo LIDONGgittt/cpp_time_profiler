@@ -1,8 +1,11 @@
 #ifndef PRINTER_H
 #define PRINTER_H PRINTER_H
 
+#include <string>
 #include <iomanip>
 #include <sstream>
+#include <fstream>
+#include <list>
 
 #include <boost/filesystem.hpp>
 #include <boost/date_time/posix_time/posix_time.hpp>
@@ -38,106 +41,164 @@ private:
 
 
 public:
-    /// Add a measurement whose statistics will be printed when print()
+    /// Adds a measurement whose statistics will be printed when print()
     /// is called.
     void add(const MultiMeasurement& measurement)
     {
         measurements_.push_back(measurement);
+    }
+    
+    
+    /// Adds a list of measurements whose statistics will be printed when 
+    /// print() is called.
+    void add(const std::list<MultiMeasurement>& measurements)
+    {
+        std::list<MultiMeasurement>::const_iterator lit;
+        for (lit = measurements.begin(); lit != measurements.end(); lit++)
+            add(*lit);
     }
 
 
     /// Prints the statistics of the given measurements.
     void print() const
     {
-        print_title();
-        print_header();
+        std::cerr << create_table();
+    }
+    
+    
+    /// Creates a table that shows the statistics of the given measurements.
+    std::string create_table() const
+    {
+        std::stringstream stream;
+        stream << create_title() << create_header();
 
         for (int i = 0; i < measurements_.size(); i++)
         {
-            print(measurements_[i]);
-            print_hline((i < measurements_.size()-1) ? '-' : '#');
+            stream << create_entry(measurements_[i]);
+            stream << create_hline((i < measurements_.size()-1) ? '-' : '#');
         }
+        
+        return stream.str();
+    }
+    
+    
+    /// Saves the current profiling information to \c $HOME/.speedo/log.
+    void save_log() const
+    {
+        // Create the folder name.
+        std::stringstream folder_name;
+        folder_name << getenv("HOME") << "/.speedo/log";
+        boost::filesystem::path folder_path(folder_name.str());
+        
+        // Create the folder.
+        boost::filesystem::create_directories(folder_path);
+        
+        // Create the name of the log file from the current date and time.
+        std::stringstream file_name;
+        boost::posix_time::time_facet* facet(
+                        new boost::posix_time::time_facet("%Y%m%d-%H%M%S"));
+        file_name.imbue(std::locale(file_name.getloc(), facet));
+        file_name << boost::posix_time::second_clock::local_time() << ".log";
+        
+        // Save the log file.
+        std::ofstream logfile;
+        logfile.open(std::string(boost::filesystem::canonical(folder_path).string() 
+                                 + "/" + file_name.str()).c_str());
+        logfile << create_table();
+        logfile.close();
     }
 
 
 private:
-    /// Prints a horizontal line consisting of the given character.
-    static void print_hline(char fill = '#')
+    /// Generates a string containing a horizontal line
+    /// consisting of the given character.
+    static std::string create_hline(char fill = '#')
     {
-        std::cerr << std::setfill(fill) << std::setw(line_width) << fill << std::endl;
+        std::stringstream stream;
+        stream << std::setfill(fill) << std::setw(line_width) << fill << std::endl;
+        return stream.str();
     }
 
 
-    /// Prints a heading.
-    static void print_title()
-    {
+    /// Generates a string containing the profiler's heading.
+    static std::string create_title()
+    {       
         const std::string title(" PROFILING WITH SPEEDO ");
 
         const char fill = '#';
-        std::cerr << std::setfill(fill)
-                  << std::setw(line_width) << fill << std::endl
-                  << std::setw((line_width-title.length()) / 2) << fill << title
-                  << (title.length() % 2 > 0 ? std::string(1, fill) : "")
-                  << std::setw((line_width-title.length()) / 2) << fill << std::endl
-                  << std::setw(line_width) << fill << std::endl;
+        std::stringstream stream;
+        stream << std::setfill(fill)
+               << std::setw(line_width) << fill << std::endl
+               << std::setw((line_width-title.length()) / 2) << fill << title
+               << (title.length() % 2 > 0 ? std::string(1, fill) : "")
+               << std::setw((line_width-title.length()) / 2) << fill << std::endl
+               << std::setw(line_width) << fill << std::endl;
+               
+        return stream.str();
     }
 
 
-    /// Prints the headers of all columns.
-    static void print_header()
+    /// Generates a string with the headers of all columns.
+    static std::string create_header()
     {
-        std::cerr << std::setfill(' ')
-                  << std::setw(file_col_width)         << std::left  
-                  << "File"                            << "|" 
-                  << std::setw(line_col_width)         << std::right 
-                  << "Line "                           << "|" 
-                  << std::setw(count_col_width)        << std::right 
-                  << "Count "                          << "|"
-                  << std::setw(avg_duration_col_width) << std::right 
-                  << "Average [us] "                   << "|"
-                  << std::setw(ovr_duration_col_width) << std::right 
-                  << "Overall [us]"
-                  << std::endl;
-
-        print_hline('=');
+        std::stringstream stream;
+        stream << std::setfill(' ')
+               << std::setw(file_col_width)         << std::left  
+               << "File"                            << "|" 
+               << std::setw(line_col_width)         << std::right 
+               << "Line "                           << "|" 
+               << std::setw(count_col_width)        << std::right 
+               << "Count "                          << "|"
+               << std::setw(avg_duration_col_width) << std::right 
+               << "Average [us] "                   << "|"
+               << std::setw(ovr_duration_col_width) << std::right 
+               << "Overall [us]"
+               << std::endl
+               << create_hline('=');
+               
+        return stream.str();
     }
 
 
-    /// Prints two rows for each measurement.
-    static void print(const MultiMeasurement& measurement)
+    /// Generates a table entry for the given measurement.
+    static std::string create_entry(const MultiMeasurement& measurement)
     {
-        // Print where the measurement started.
+        // Create a line indicating where the measurement started.
         const std::string file_start(crop_path(measurement.get_start().get_file()));
-        std::cerr << std::setfill(' ')
-                  << std::setw(file_col_width)          << std::left  
-                  << file_start                         << "|"
-                  << std::setw(line_col_width)          << std::right 
-                  << measurement.get_start().get_line() << "|"
-                  << std::setw(count_col_width)         << std::right 
-                  << " "                                << "|"
-                  << std::setw(avg_duration_col_width)  << std::right 
-                  << " "                                << "|"
-                  << std::endl;
+        std::stringstream stream;
+        stream << std::setfill(' ')
+               << std::setw(file_col_width)          << std::left  
+               << file_start                         << "|"
+               << std::setw(line_col_width)          << std::right 
+               << measurement.get_start().get_line() << "|"
+               << std::setw(count_col_width)         << std::right 
+               << " "                                << "|"
+               << std::setw(avg_duration_col_width)  << std::right 
+               << " "                                << "|"
+               << std::endl;
 
-        // Print the file name in the second line only if it 
+        // Show the file name in the second line only if it 
         // is a different file.
         std::string file_end(crop_path(measurement.get_end().get_file()));
         if (file_start == file_end)
             file_end.clear();
             
-        // Print where the measurement ended and how long it took.            
-        std::cerr << std::setfill(' ')
-                  << std::setw(file_col_width)                  << std::left  
-                  << file_end                                   << "|"
-                  << std::setw(line_col_width)                  << std::right 
-                  << measurement.get_end().get_line()           << "|"
-                  << std::setw(count_col_width)                 << std::right 
-                  << measurement.count()                        << "|"
-                  << std::setw(avg_duration_col_width)          << std::right 
-                  << insert_separators(measurement.get_average_duration().count()) << "|"
-                  << std::setw(ovr_duration_col_width)          << std::right
-                  << insert_separators(measurement.get_overall_duration().count()) 
-                  << std::endl;
+        // Create a line indicating where the measurement ended 
+        // and how long it took.            
+        stream << std::setfill(' ')
+               << std::setw(file_col_width)                  << std::left  
+               << file_end                                   << "|"
+               << std::setw(line_col_width)                  << std::right 
+               << measurement.get_end().get_line()           << "|"
+               << std::setw(count_col_width)                 << std::right 
+               << measurement.count()                        << "|"
+               << std::setw(avg_duration_col_width)          << std::right 
+               << insert_separators(measurement.get_average_duration().count()) << "|"
+               << std::setw(ovr_duration_col_width)          << std::right
+               << insert_separators(measurement.get_overall_duration().count()) 
+               << std::endl;
+               
+        return stream.str();
     }
 
 
@@ -167,25 +228,6 @@ private:
         }
 
         return stream.str();
-    }
-    
-    
-    /// Saves the current profiling information to \c $HOME/.speedo/log.
-    static void save_log()
-    {
-        // Create the folder name.
-        std::stringstream folder_name;
-        folder_name << getenv("HOME") << "/.speedo/log";
-        boost::filesystem::path folder_path(folder_name.str());
-        
-        // Create the folder.
-        boost::filesystem::create_directories(folder_path);
-        
-        // Create the name of the log file from the current date and time.
-        std::stringstream file_name;
-        boost::posix_time::time_facet* facet(new boost::posix_time::time_facet("%Y%m%d-%H%M%S"));
-        file_name.imbue(std::locale(file_name.getloc(), facet));
-        file_name << boost::posix_time::second_clock::local_time() << ".log";
     }
 };
 
