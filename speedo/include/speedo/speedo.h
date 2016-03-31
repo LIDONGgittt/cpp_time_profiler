@@ -23,11 +23,15 @@
 /// The profiler prints its statistics on the console when being destroyed.
 /// The statistics can also be printed by calling Speedo::print_statistics().
 ///
-/// \note Profiling can be deactivated by simply adding
+/// \note Profiling is enabled by default. It can be globally disabled
+/// by simply adding
 /// \code
 /// #define PROFILE 0
 /// \endcode
 /// to the source file before including \c speedo.h.
+/// \code
+/// #define PROFILE 1
+/// \endcode enables profiling again.
 ///
 /// \note This class is not thread-safe.
 class Speedo
