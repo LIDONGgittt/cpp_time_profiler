@@ -6,11 +6,11 @@
 int main()
 {
 ___ for (int j = 0; j < 20; j++)
-___    for (long int i = 0; i < 10000000; ++i)
-            ;
-___
-    for (long int i = 0; i < 10000000; ++i)
-        ;
+        for (long int i = 0; i < 10000000; ++i)
+___         double a = 1.2345 * 9.8765;
+    
+for (long int i = 0; i < 10000000; ++i)
+        double b = 1.2345 / 9.8765;
 ___
     return 0;
 }
