@@ -31,6 +31,7 @@ public:
 
     /// Returns a hash value that maps the file and line values of both
     /// the start and the end measurement to a string.
+    /// This hash uniquely identifies every combination of two checkpoints.
     std::size_t get_hash() const
     {
         boost::hash<std::string> hash;
@@ -41,7 +42,7 @@ public:
 
     /// Get the time that expired between the start checkpoint and the
     /// end checkpoint.
-    /// Unit: [µs].
+    /// Unit: [us].
     boost::chrono::microseconds get_duration() const
     {
         return boost::chrono::duration_cast<boost::chrono::microseconds>(
@@ -66,3 +67,4 @@ public:
 
 
 #endif
+

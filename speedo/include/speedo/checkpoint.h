@@ -8,7 +8,12 @@
 #include <sstream>
 
 
-/// Checkpoint used for measuring execution time.
+/// Checkpoint used for measuring execution time. 
+/// Objects of this class store all information necessary to identify 
+/// a checkpoint: 
+///  * the file where the checkpoint resides,
+///  * the line where the checkpoint resides,
+///  * the point in time when the checkpoint was hit.
 class Checkpoint
 {
 protected:
@@ -26,12 +31,6 @@ protected:
 
 
 public:
-    /// Default constructor.
-    Checkpoint()
-    {
-    }
-
-
     /// Constructor.
     /// Initializes the member variables.
     Checkpoint(const std::string& file, int line, const std::string& function)
@@ -90,3 +89,4 @@ public:
 
 
 #endif
+

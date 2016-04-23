@@ -9,7 +9,7 @@
 // Define the placeholder for setting checkpoints.
 #define ___ Speedo::tick(__FILE__, __LINE__, __FUNCTION__);
 
-#include <vector>
+#include <deque>
 #include <map>
 #include <list>
 #include "speedo/printer.h"
@@ -38,9 +38,8 @@
 class Speedo
 {
 private:
-    /// Vector of all checkpoints collected during program execution.
-    std::vector<Checkpoint> checkpoints_;
-
+    std::deque<Checkpoint> checkpoints_;
+    std::map<std::size_t, MultiMeasurement> measurement_map_; 
 
 private:
     /// Default constructor.
@@ -84,32 +83,18 @@ private:
     /// in descending order.
     static std::list<MultiMeasurement> sort_measurements()
     {
-        // Create a map that contains all measurements arranged by the hashes
-        // of their file-line pairs.
-        std::map<std::size_t, MultiMeasurement> measurement_map;
-
-        // Iterate over all checkpoints collected and sort them into the map.
-        for (int i = 1; i < get_instance().checkpoints_.size(); i++)
-        {
-            SingleMeasurement single_measurement(
-                                            get_instance().checkpoints_[i-1],
-                                            get_instance().checkpoints_[i]);
-            std::size_t hash = single_measurement.get_hash();
-            if (measurement_map.count(hash) <= 0)
-            {
-                MultiMeasurement multi_measurement;
-                multi_measurement.add(single_measurement);
-                measurement_map[hash] = multi_measurement;
-            }
-            else
-                measurement_map[hash].add(single_measurement);
-        }
-
-        // Copy the map elements into a list that can be sorted.
+        // Copy the elements of the measurement map into a list 
+        // that can be sorted.
         std::list<MultiMeasurement> measurement_list;
+        std::map<std::size_t, MultiMeasurement>& measurement_map
+            = get_instance().measurement_map_;
         std::map<std::size_t, MultiMeasurement>::const_iterator mit;
-        for (mit = measurement_map.begin(); mit != measurement_map.end(); mit++)
+        for (mit = measurement_map.begin(); 
+             mit != measurement_map.end(); 
+             mit++)
+        {
             measurement_list.push_back(mit->second);
+        }
 
         // Sort the measurements based on their overall execution times,
         // starting with the largest value.
@@ -122,7 +107,8 @@ private:
 
 public:
     /// Adds a measurement.
-    static void tick(const std::string& file, int line, const std::string& function)
+    static void tick(
+                const std::string& file, int line, const std::string& function)
     {
         // If profiling is deactivated, abort.
         #if PROFILE <= 0
@@ -130,7 +116,16 @@ public:
         #endif
 
         // Add the measurement point.
-        get_instance().checkpoints_.push_back(Checkpoint(file, line, function));
+        std::deque<Checkpoint>& checkpoints = get_instance().checkpoints_;
+        checkpoints.push_back(Checkpoint(file, line, function));
+        
+        if (checkpoints.size() >= 2)
+        {
+            SingleMeasurement measurement(checkpoints[0], checkpoints[1]);
+            get_instance().measurement_map_[measurement.get_hash()].add(
+                                                                measurement);
+            checkpoints.pop_front();    
+        }
     }
 
 

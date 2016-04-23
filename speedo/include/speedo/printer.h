@@ -172,13 +172,13 @@ private:
     static std::string create_entry(const MultiMeasurement& measurement)
     {
         // Create a line indicating where the measurement started.
-        const std::string file_start(crop_path(measurement.get_start().get_file()));
+        const std::string file_start(crop_path(measurement.get_start_file()));
         std::stringstream stream;
         stream << std::setfill(' ')
                << std::setw(file_col_width)          << std::left
                << file_start                         << "|"
                << std::setw(line_col_width)          << std::right
-               << measurement.get_start().get_line() << "|"
+               << measurement.get_start_line()       << "|"
                << std::setw(count_col_width)         << std::right
                << " "                                << "|"
                << std::setw(avg_duration_col_width)  << std::right
@@ -187,7 +187,7 @@ private:
 
         // Show the file name in the second line only if it
         // is a different file.
-        std::string file_end(crop_path(measurement.get_end().get_file()));
+        std::string file_end(crop_path(measurement.get_end_file()));
         if (file_start == file_end)
             file_end.clear();
 
@@ -197,7 +197,7 @@ private:
                << std::setw(file_col_width)                  << std::left
                << file_end                                   << "|"
                << std::setw(line_col_width)                  << std::right
-               << measurement.get_end().get_line()           << "|"
+               << measurement.get_end_line()                 << "|"
                << std::setw(count_col_width)                 << std::right
                << measurement.count()                        << "|"
                << std::setw(avg_duration_col_width)          << std::right

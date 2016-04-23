@@ -1,1 +1,1 @@
-A simple profiler for measuring execution times of single-threaded C++ programs.
+A simple and lightweight profiler for measuring CPU execution times of single-threaded C++ programs.
