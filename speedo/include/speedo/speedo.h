@@ -15,11 +15,11 @@
 #include "speedo/printer.h"
 
 
-/// Simple execution time profiler.
+/// Simple CPU execution time profiler.
 ///
 /// The profiler is implemented as a singleton.
 /// Measurement points are added by inserting 3 underscores \c ___
-/// at the start of a line of code.
+/// in the code.
 /// The profiler prints its statistics on the console when being destroyed.
 /// The statistics can also be printed by calling Speedo::print_statistics().
 ///
@@ -33,11 +33,12 @@
 /// #define PROFILE 1
 /// \endcode enables profiling again.
 ///
-/// \note This class is not thread-safe.
+/// \note This class is not thread-safe. It is designed to be used with 
+/// single-threaded programs.
 class Speedo
 {
 private:
-    /// All checkpoints collected during program execution.
+    /// Vector of all checkpoints collected during program execution.
     std::vector<Checkpoint> checkpoints_;
 
 
