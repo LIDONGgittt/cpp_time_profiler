@@ -1,7 +1,7 @@
 #ifndef SINGLE_MEASUREMENT_H
 #define SINGLE_MEASUREMENT_H SINGLE_MEASUREMENT_H
 
-// Boost hash generation.
+// Boost hashing.
 #include <boost/functional/hash.hpp>
 
 // Checkpoint class.
@@ -29,9 +29,10 @@ public:
     }
 
 
-    /// Returns a hash value that maps the file and line values of both
-    /// the start and the end measurement to a string.
-    /// This hash uniquely identifies every combination of two checkpoints.
+    /// Returns a hash value that is generated from the file and line values 
+    /// of both the start and the end measurement.
+    /// Thus, this hash uniquely identifies every combination 
+    /// of two checkpoints.
     std::size_t get_hash() const
     {
         boost::hash<std::string> hash;
