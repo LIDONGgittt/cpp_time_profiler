@@ -9,28 +9,54 @@
 class MultiMeasurement
 {
 protected:
+    /// Hash that uniquely identifies the combination of start checkpoint and
+    /// end checkpoint. 
     std::size_t hash_;
+
+    /// Name of the file where the start checkpoint resides.
     std::string start_file_;
+
+    /// Name of the function where the start checkpoint resides.
     std::string start_function_;
+
+    /// Number of the line where the start checkpoint resides.
     int start_line_;
+
+    /// Name of the file where the end checkpoint resides.
     std::string end_file_;
+
+    /// Name of the function where the end checkpoint resides.
     std::string end_function_;
+
+    /// Number of the line where the end checkpoint resides.
     int end_line_;
+
+    /// Number of single measurements collected by this object.
     int count_;
+
+    /// Sum of the durations of all measurements collected by this object.
     boost::chrono::microseconds overall_duration_;
 
 public:
+    /// Default constructor.
+    /// Initializes the member variables to 0.
     MultiMeasurement()
         : hash_(0),
+          start_line_(0),
+          end_line_(0),
           count_(0),
           overall_duration_(0)
     {
     }
 
 
-    /// Adds a measurement to the vector of measurements.
+    /// Collects a measurement.
+    /// \return \c true if the hash of the measurement matches the hash of 
+    /// the measurements collected so far.
     bool add(const SingleMeasurement& measurement)
     {
+        // If no measurement has been collected so far, define the member
+        // variables.
         if (hash_ == 0)
         {
             hash_           = measurement.get_hash();
@@ -43,10 +69,11 @@ public:
         }
 
         // Check if the measurement starts and ends at the same checkpoints
-        // as the other measurements in the vector.
+        // as the other measurements that have been collected.
         if (hash_ != measurement.get_hash()) 
             return false;
 
+        // Update the statistics.
         count_++;
         overall_duration_ += measurement.get_duration();
 
@@ -61,7 +88,7 @@ public:
     }
     
     
-    /// Computes the overall duration of all measurements.
+    /// Returns the overall duration of all measurements.
     /// Unit: [us].
     boost::chrono::microseconds get_overall_duration() const
     {
@@ -89,42 +116,50 @@ public:
     }
 
 
+    /// Returns the hash of the measurements collected so far.
+    /// If no measurements have been collected, 0 is returned.
     std::size_t get_hash() const
     {
         return hash_;
     }
 
 
+    /// Returns the file where the start checkpoint resides.
     std::string get_start_file() const
     {
         return start_file_;
     }
 
 
+    /// Returns the function where the start checkpoint resides.
     std::string get_start_function() const
     {
         return start_function_;
     }
 
 
+    /// Returns the number of the line where the start checkpoint resides.
     int get_start_line() const
     {
         return start_line_;
     }
 
 
+    /// Returns the file where the end checkpoint resides.
     std::string get_end_file() const
     {
         return end_file_;
     }
 
 
+    /// Returns the function where the end checkpoint resides.
     std::string get_end_function() const
     {
         return end_function_;
     }
 
     
+    /// Returns the number of the line where the end checkpoint resides.
     int get_end_line() const
     {
         return end_line_;

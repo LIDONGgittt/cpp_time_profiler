@@ -73,9 +73,11 @@ public:
         if (measurements_.size() <= 0)
             return std::string();
 
+        // Create the header of the table.
         std::stringstream stream;
         stream << create_title() << create_header();
 
+        // Add each measurement to the table.
         for (int i = 0; i < measurements_.size(); i++)
         {
             stream << create_entry(measurements_[i]);
@@ -110,20 +112,23 @@ public:
 
         // Save the log file.
         std::ofstream logfile;
-        logfile.open(std::string(boost::filesystem::canonical(folder_path).string()
-                                 + "/" + file_name.str()).c_str());
+        logfile.open(std::string(
+            boost::filesystem::canonical(folder_path).string() 
+            + "/" 
+            + file_name.str()).c_str());
         logfile << create_table();
         logfile.close();
     }
 
 
-private:
+protected:
     /// Generates a string containing a horizontal line
     /// consisting of the given character.
     static std::string create_hline(char fill = '#')
     {
         std::stringstream stream;
-        stream << std::setfill(fill) << std::setw(line_width) << fill << std::endl;
+        stream << std::setfill(fill) << std::setw(line_width) << fill 
+               << std::endl;
         return stream.str();
     }
 
@@ -131,16 +136,19 @@ private:
     /// Generates a string containing the profiler's heading.
     static std::string create_title()
     {
-        const std::string title(" PROFILING WITH SPEEDO ");
+        const std::string title(" PROFILED WITH SPEEDO ");
 
         const char fill = '#';
         std::stringstream stream;
         stream << std::setfill(fill)
-               << std::setw(line_width) << fill << std::endl
+               << std::setw(line_width) << fill 
+               << std::endl
                << std::setw((line_width-title.length()) / 2) << fill << title
                << (title.length() % 2 > 0 ? std::string(1, fill) : "")
-               << std::setw((line_width-title.length()) / 2) << fill << std::endl
-               << std::setw(line_width) << fill << std::endl;
+               << std::setw((line_width-title.length()) / 2) << fill 
+               << std::endl
+               << std::setw(line_width) << fill 
+               << std::endl;
 
         return stream.str();
     }
@@ -199,9 +207,10 @@ private:
                << std::setw(line_col_width)                  << std::right
                << measurement.get_end_line()                 << "|"
                << std::setw(count_col_width)                 << std::right
-               << measurement.count()                        << "|"
+               << insert_separators(measurement.count())     << "|"
                << std::setw(avg_duration_col_width)          << std::right
-               << insert_separators(measurement.get_average_duration().count()) << "|"
+               << insert_separators(measurement.get_average_duration().count()) 
+                                                             << "|"
                << std::setw(ovr_duration_col_width)          << std::right
                << insert_separators(measurement.get_overall_duration().count())
                << std::endl;
@@ -237,7 +246,34 @@ private:
 
         return stream.str();
     }
+
+
+    /// If the given number would exceed the given number of digits to display,
+    /// crop it.
+    /// Example: crop_number(12345, 4) returns ">999".
+    static std::string crop_number(long int number, int n_digits)
+    {
+        // Make sure n_digits is in the valid range.
+        n_digits = std::max(2, n_digits);
+
+        // Compute the minimum and maximum numbers which can be displayed
+        // with the given number of digits.
+        long int max_number = std::pow(10, n_digits-1) - 1;
+        long int min_number = -max_number;
+        
+        // Crop the number, if necessary.
+        std::stringstream stream;
+        if (number <= max_number && number >= min_number)
+            stream << number;
+        if (number > max_number)
+            stream << ">" << max_number;
+        if (number < min_number)
+            stream << "<" << min_number;
+
+        return stream.str();
+    }
 };
 
 
 #endif
+

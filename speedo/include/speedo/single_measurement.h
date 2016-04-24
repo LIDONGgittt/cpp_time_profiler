@@ -47,8 +47,7 @@ public:
     boost::chrono::microseconds get_duration() const
     {
         return boost::chrono::duration_cast<boost::chrono::microseconds>(
-                                        end_checkpoint_.get_time_point()
-                                        - start_checkpoint_.get_time_point());
+         end_checkpoint_.get_time_point() - start_checkpoint_.get_time_point());
     }
 
 
