@@ -18,7 +18,7 @@
 /// Simple CPU execution time profiler.
 ///
 /// The profiler is implemented as a singleton.
-/// Measurement points are added by inserting 3 underscores \c ___
+/// Measurement points are added by inserting three underscores \c ___
 /// in the code.
 /// The profiler prints its statistics on the console when being destroyed.
 /// The statistics can also be printed by calling Speedo::print_statistics().
