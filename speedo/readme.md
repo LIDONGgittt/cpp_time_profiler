@@ -7,6 +7,33 @@ A simple CPU execution time profiler for C++
 Speedo measures the CPU execution times elapsed between checkpoints in the code.
 You set the checkpoints. Checkpoints can be hit one or several times.
 
+This is the output of the sample program you find in `speedo/src/speedo_test.cpp`:
+```
+################################################################################
+############################# PROFILED WITH SPEEDO #############################
+################################################################################
+File                          | Line |    Count |  Average [us] |   Overall [us]
+================================================================================
+speedo_test.cpp               |     9|          |               |
+                              |    11|         1|     53,224,780|     53,224,780
+--------------------------------------------------------------------------------
+speedo_test.cpp               |    22|          |               |
+                              |    22| 1,999,999|              7|     14,276,117
+--------------------------------------------------------------------------------
+speedo_test.cpp               |    22|          |               |
+                              |    26|         1|            296|            296
+--------------------------------------------------------------------------------
+speedo_test.cpp               |    11|          |               |
+                              |    29|         1|             31|             31
+--------------------------------------------------------------------------------
+speedo_test.cpp               |    26|          |               |
+                              |     9|         1|             17|             17
+--------------------------------------------------------------------------------
+speedo_test.cpp               |    20|          |               |
+                              |    22|         1|              3|              3
+################################################################################
+```
+
 ### How to install it
 
 Speedo is header-only. To use it, simply copy the header files and include speedo.h in your code.
@@ -28,6 +55,8 @@ To enable profiling again, write
 #define PROFILE 1
 ```
 before including speedo.h.
+
+You find an example program in `speedo/src/speedo_test.cpp`.
 
 ### Note
 
