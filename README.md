@@ -8,7 +8,8 @@ C++ programs
 Speedo measures the CPU execution times elapsed between checkpoints in the code.
 You set the checkpoints. Checkpoints can be hit one or several times.
 
-This is the output of the sample program you find in `speedo/src/speedo_test.cpp`:
+This is the output of the sample program you find in 
+`speedo/src/speedo_test.cpp`:
 ```
 ################################################################################
 ############################# PROFILED WITH SPEEDO #############################
@@ -38,7 +39,7 @@ speedo_test.cpp               |    20|          |               |
 ### How to install it
 
 Speedo is a header-only library. To use it, simply copy the header files onto 
-your computer and include speedo.h in your code.
+your computer and include `speedo.h` in your code.
 
 ### How to use it
 
@@ -63,5 +64,6 @@ You find an example program in `speedo/src/speedo_test.cpp`.
 
 ### Note
 
-Speedo is not thread-safe. It is designed to be used with single-threaded programs.
+Speedo is not thread-safe. It is designed to be used with single-threaded 
+programs.
 
