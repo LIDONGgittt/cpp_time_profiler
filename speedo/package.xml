@@ -10,8 +10,8 @@
   <license>free</license>
 
   <buildtool_depend>catkin</buildtool_depend>
-  <build_depend>Boost</build_depend>
-  <run_depend>Boost</run_depend>
+  <build_depend>boost</build_depend>
+  <run_depend>boost</run_depend>
 
   <export>
     <build_tool>catkin</build_tool>
