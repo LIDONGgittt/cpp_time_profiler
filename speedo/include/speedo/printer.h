@@ -78,10 +78,10 @@ public:
         stream << create_title() << create_header();
 
         // Add each measurement to the table.
-        for (int i = 0; i < measurements_.size(); i++)
+        for (int i = 0; i < (int)measurements_.size(); i++)
         {
             stream << create_entry(measurements_[i]);
-            stream << create_hline((i < measurements_.size()-1) ? '-' : '#');
+            stream << create_hline((i < (int)measurements_.size()-1) ? '-' : '#');
         }
 
         return stream.str();
@@ -113,8 +113,8 @@ public:
         // Save the log file.
         std::ofstream logfile;
         logfile.open(std::string(
-            boost::filesystem::canonical(folder_path).string() 
-            + "/" 
+            boost::filesystem::canonical(folder_path).string()
+            + "/"
             + file_name.str()).c_str());
         logfile << create_table();
         logfile.close();
@@ -127,7 +127,7 @@ protected:
     static std::string create_hline(char fill = '#')
     {
         std::stringstream stream;
-        stream << std::setfill(fill) << std::setw(line_width) << fill 
+        stream << std::setfill(fill) << std::setw(line_width) << fill
                << std::endl;
         return stream.str();
     }
@@ -141,13 +141,13 @@ protected:
         const char fill = '#';
         std::stringstream stream;
         stream << std::setfill(fill)
-               << std::setw(line_width) << fill 
+               << std::setw(line_width) << fill
                << std::endl
                << std::setw((line_width-title.length()) / 2) << fill << title
                << (title.length() % 2 > 0 ? std::string(1, fill) : "")
-               << std::setw((line_width-title.length()) / 2) << fill 
+               << std::setw((line_width-title.length()) / 2) << fill
                << std::endl
-               << std::setw(line_width) << fill 
+               << std::setw(line_width) << fill
                << std::endl;
 
         return stream.str();
@@ -209,7 +209,7 @@ protected:
                << std::setw(count_col_width)                 << std::right
                << insert_separators(measurement.count())     << "|"
                << std::setw(avg_duration_col_width)          << std::right
-               << insert_separators(measurement.get_average_duration().count()) 
+               << insert_separators(measurement.get_average_duration().count())
                                                              << "|"
                << std::setw(ovr_duration_col_width)          << std::right
                << insert_separators(measurement.get_overall_duration().count())
@@ -235,7 +235,7 @@ protected:
         const std::string n_str = stream.str();
 
         stream.str("");
-        for (int pos = 0; pos < n_str.length(); pos++)
+        for (int pos = 0; pos < (int)n_str.length(); pos++)
         {
             stream << n_str.at(pos);
 
@@ -260,7 +260,7 @@ protected:
         // with the given number of digits.
         long int max_number = std::pow(10, n_digits-1) - 1;
         long int min_number = -max_number;
-        
+
         // Crop the number, if necessary.
         std::stringstream stream;
         if (number <= max_number && number >= min_number)

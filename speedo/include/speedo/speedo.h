@@ -6,7 +6,8 @@
     #define PROFILE 1
 #endif
 
-// Define the placeholder for setting checkpoints.
+// Define the placeholders for setting checkpoints.
+#define xxx Speedo::tick(__FILE__, __LINE__, __FUNCTION__);
 #define ___ Speedo::tick(__FILE__, __LINE__, __FUNCTION__);
 
 #include <deque>
@@ -17,9 +18,7 @@
 
 /// Simple CPU execution time profiler.
 ///
-/// The profiler is implemented as a singleton.
-/// Measurement points are added by inserting three underscores \c ___
-/// in the code.
+/// Measurement points are added by inserting three underscores \c ___ or three X \c xxx in the code.
 /// The profiler prints its statistics on the console when being destroyed.
 /// The statistics can also be printed by calling Speedo::print_statistics().
 ///
