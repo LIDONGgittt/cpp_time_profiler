@@ -9,6 +9,39 @@ C++ programs
 
 Measures the CPU execution times elapsed between checkpoints. Checkpoints can be added to anywhere and can be hit multiple times.
 
+### How to install it
+
+Requirement:
+- C++ 17 or higher
+
+This is a header-only library. Simply include the header file `time_profiler.h` in your projects and you are good to go.
+
+
+### How to use it
+
+Measurement points are added by inserting `PROFILER_HOOK()` to target lines. The macro can work with or without semicolon ';'.
+
+The profiler prints the statistics on the console when being destroyed.
+The statistics can also be printed by calling `TimeProfiler::print_statistics()`.
+
+Profiling is enabled by default. It can be globally disabled by simply adding
+```c
+#define PROFILE 0
+```
+to the source file before including time_profiler.h.
+To enable profiling again, write
+```c
+#define PROFILE 1
+```
+before including time_profiler.h.
+
+You can find an example program in `src/time_profiler_test.cpp`.
+
+### Note
+
+The profiler is not thread-safe. It is designed to be used with single-threaded programs.
+
+
 Sample output from `src/time_profiler_test.cpp`:
 ```
 ========================================================================================================================
@@ -34,34 +67,4 @@ time_profiler_test.cpp        |main                                    |    19| 
 ########################################################################################################################
 ```
 
-### How to install it
-
-This is a header-only library. To use it, simply include the header files in your projects.
-
-Requirement:
-- C++ 17 or higher
-
-### How to use it
-
-Measurement points are added by inserting `PROFILER_HOOK()` to target lines. The macro can work with or without semicolon ';'.
-
-The profiler prints the statistics on the console when being destroyed.
-The statistics can also be printed by calling `TimeProfiler::print_statistics()`.
-
-Profiling is enabled by default. It can be globally disabled by simply adding
-```c
-#define PROFILE 0
-```
-to the source file before including time_profiler.h.
-To enable profiling again, write
-```c
-#define PROFILE 1
-```
-before including time_profiler.h.
-
-You can find an example program in `src/time_profiler_test.cpp`.
-
-### Note
-
-The profiler is not thread-safe. It is designed to be used with single-threaded programs.
 
