@@ -29,11 +29,6 @@ Profiling is enabled by default. It can be globally disabled by defining USE_PRO
 #define USE_PROFILER 0
 ```
 
-Define USE_PROFILER to 1 to enable the profiler:
-```c
-#define USE_PROFILER 1
-```
-
 You can find an example program in `src/time_profiler_test.cpp`.
 
 ### Note

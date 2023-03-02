@@ -7,4 +7,3 @@ include_directories(include)
 
 # Declare the test executable.
 add_executable(time_profiler_test src/time_profiler_test.cpp)
-
