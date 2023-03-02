@@ -1,9 +1,8 @@
 #ifndef SINGLE_MEASUREMENT_H
 #define SINGLE_MEASUREMENT_H SINGLE_MEASUREMENT_H
 
-// Boost hashing.
-#include <boost/functional/hash.hpp>
 #include <functional>
+#include <chrono>
 
 // Checkpoint class.
 #include "speedo/checkpoint.h"
@@ -45,9 +44,9 @@ public:
     /// Get the time that expired between the start checkpoint and the
     /// end checkpoint.
     /// Unit: [us].
-    boost::chrono::microseconds get_duration() const
+    std::chrono::microseconds get_duration() const
     {
-        return boost::chrono::duration_cast<boost::chrono::microseconds>(
+        return std::chrono::duration_cast<std::chrono::microseconds>(
          end_checkpoint_.get_time_point() - start_checkpoint_.get_time_point());
     }
 

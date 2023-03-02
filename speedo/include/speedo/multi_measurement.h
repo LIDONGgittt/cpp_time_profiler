@@ -35,7 +35,7 @@ protected:
     int count_;
 
     /// Sum of the durations of all measurements collected by this object.
-    boost::chrono::microseconds overall_duration_;
+    std::chrono::microseconds overall_duration_;
 
 public:
     /// Default constructor.
@@ -90,7 +90,7 @@ public:
     
     /// Returns the overall duration of all measurements.
     /// Unit: [us].
-    boost::chrono::microseconds get_overall_duration() const
+    std::chrono::microseconds get_overall_duration() const
     {
         return overall_duration_;
     }
@@ -98,9 +98,9 @@ public:
 
     /// Computes the average duration of all measurements.
     /// Unit: [us].
-    boost::chrono::microseconds get_average_duration() const
+    std::chrono::microseconds get_average_duration() const
     {
-        boost::chrono::microseconds average_duration(overall_duration_);
+        std::chrono::microseconds average_duration(overall_duration_);
         
         if (count_ > 0)
             average_duration /= count_;

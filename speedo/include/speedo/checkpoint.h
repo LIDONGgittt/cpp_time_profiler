@@ -2,7 +2,8 @@
 #define CHECKPOINT_H CHECKPOINT_H
 
 // Boost timing.
-#include <boost/chrono.hpp>
+// #include <boost/chrono.hpp>
+#include <chrono>
 
 // String streams.
 #include <sstream>
@@ -27,7 +28,7 @@ protected:
     std::string function_;
 
     /// Time stamp of the checkpoint.
-    boost::chrono::system_clock::time_point time_point_;
+    std::chrono::system_clock::time_point time_point_;
 
 
 public:
@@ -37,7 +38,7 @@ public:
         : file_(file),
           line_(line),
           function_(function),
-          time_point_(boost::chrono::system_clock::now())
+          time_point_(std::chrono::system_clock::now())
     {
     }
 
@@ -60,7 +61,7 @@ public:
 
 
     /// Get the time the checkpoint was captured.
-    boost::chrono::system_clock::time_point get_time_point() const
+    std::chrono::system_clock::time_point get_time_point() const
     {
         return time_point_;
     }
