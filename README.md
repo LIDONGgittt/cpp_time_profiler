@@ -1,69 +1,66 @@
-## Speedo
+Modified from https://github.com/acschaefer/profiler.git @[acschaefer](https://github.com/acschaefer)
 
-A simple and lightweight CPU execution time profiler for single-threaded 
+## C++ Time
+
+A simple and lightweight CPU execution time profiler for **single-threaded**
 C++ programs
 
 ### What it does
 
-Speedo measures the CPU execution times elapsed between checkpoints in the code.
+Measures the CPU execution times elapsed between checkpoints in the code.
 You set the checkpoints. Checkpoints can be hit one or several times.
 
 This is the output of the sample program you find in 
-`speedo/src/speedo_test.cpp`:
+`src/cpp_time_profiler.cpp`:
 ```
-################################################################################
-############################# PROFILED WITH SPEEDO #############################
-################################################################################
-File                          | Line |    Count |  Average [us] |   Overall [us]
-================================================================================
-speedo_test.cpp               |     9|          |               |
-                              |    11|         1|     53,224,780|     53,224,780
---------------------------------------------------------------------------------
-speedo_test.cpp               |    22|          |               |
-                              |    22| 1,999,999|              7|     14,276,117
---------------------------------------------------------------------------------
-speedo_test.cpp               |    22|          |               |
-                              |    26|         1|            296|            296
---------------------------------------------------------------------------------
-speedo_test.cpp               |    11|          |               |
-                              |    29|         1|             31|             31
---------------------------------------------------------------------------------
-speedo_test.cpp               |    26|          |               |
-                              |     9|         1|             17|             17
---------------------------------------------------------------------------------
-speedo_test.cpp               |    20|          |               |
-                              |    22|         1|              3|              3
-################################################################################
+========================================================================================================================
+File                          |Function                                | Line |    Count |  Average [us] |   Overall [us]
+========================================================================================================================
+time_profiler_test.cpp        |function                                |     8|          |               |
+                              |function                                |    11|         1|      3,094,796|      3,094,796
+------------------------------------------------------------------------------------------------------------------------
+time_profiler_test.cpp        |main                                    |    23|          |               |
+                              |main                                    |    23| 1,999,999|              1|      2,187,379
+------------------------------------------------------------------------------------------------------------------------
+time_profiler_test.cpp        |main                                    |    23|          |               |
+                              |main                                    |    29|         1|             20|             20
+------------------------------------------------------------------------------------------------------------------------
+time_profiler_test.cpp        |function                                |    11|          |               |
+                              |main                                    |    32|         1|             17|             17
+------------------------------------------------------------------------------------------------------------------------
+time_profiler_test.cpp        |main                                    |    29|          |               |
+                              |function                                |     8|         1|              5|              5
+------------------------------------------------------------------------------------------------------------------------
+time_profiler_test.cpp        |main                                    |    19|          |               |
+                              |main                                    |    23|         1|              4|              4
+########################################################################################################################
 ```
 
 ### How to install it
 
-Speedo is a header-only library. To use it, simply copy the header files onto 
-your computer and include `speedo.h` in your code.
+This is a header-only library. To use it, simply copy the header files into your projects and include it.
 
 ### How to use it
 
-Measurement points are added by inserting 3 underscores `___` or 3 Xs `xxx` in 
-the code.
+Measurement points are added by inserting `PROFILER_HOOK()` in target lines. Can work with or without semicolomn ';'.
 
 The profiler prints its statistics on the console when being destroyed.
-The statistics can also be printed by calling `Speedo::print_statistics()`.
+The statistics can also be printed by calling `TimeProfiler::print_statistics()`.
 
 Profiling is enabled by default. It can be globally disabled by simply adding
 ```c
 #define PROFILE 0
 ```
-to the source file before including speedo.h.
+to the source file before including time_profiler.h.
 To enable profiling again, write
 ```c
 #define PROFILE 1
 ```
-before including speedo.h.
+before including time_profiler.h.
 
-You find an example program in `speedo/src/speedo_test.cpp`.
+You find an example program in `src/time_profiler_test.cpp`.
 
 ### Note
 
-Speedo is not thread-safe. It is designed to be used with single-threaded 
-programs.
+The profiler is not thread-safe. It is designed to be used with single-threaded programs.
 
