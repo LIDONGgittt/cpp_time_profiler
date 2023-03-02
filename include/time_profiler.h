@@ -317,7 +317,7 @@ namespace time_profiler
         static const int function_col_width = 40;
 
         /// Width of the column indicating the line of a checkpoint.
-        static const int line_col_width = 6;
+        static const int line_col_width = 5;
 
         /// Width of the column indicating the count of a measurement.
         static const int count_col_width = 10;
