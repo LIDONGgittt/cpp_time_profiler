@@ -7,8 +7,9 @@
 #endif
 
 // Define the placeholders for setting checkpoints.
-#define xxx Speedo::tick(__FILE__, __LINE__, __FUNCTION__);
-#define ___ Speedo::tick(__FILE__, __LINE__, __FUNCTION__);
+#define PROFILER_HOOK() ::time_profiler::TimeProfiler::tick(__FILE__, __LINE__, __FUNCTION__);
+// #define xxx ::time_profiler::TimeProfiler::tick(__FILE__, __LINE__, __FUNCTION__);
+// #define ___ ::time_profiler::TimeProfiler::tick(__FILE__, __LINE__, __FUNCTION__);
 
 #if PROFILE > 0
 
@@ -24,6 +25,7 @@
 #include <functional>
 #include <cmath>
 
+namespace time_profiler{
 /// Checkpoint used for measuring execution time.
 /// Objects of this class store all information necessary to identify
 /// a checkpoint:
@@ -370,7 +372,7 @@ public:
         return stream.str();
     }
 
-    /// Saves the current profiling information to \c $HOME/.speedo/log.
+    /// Saves the current profiling information to \c $HOME/.TimeProfiler/log.
     void save_log() const
     {
         // If no measurements are given, abort.
@@ -379,7 +381,7 @@ public:
 
         // Create the folder name.
         std::stringstream folder_name;
-        folder_name << getenv("HOME") << "/.speedo/log";
+        folder_name << getenv("HOME") << "/.TimeProfiler/log";
         std::filesystem::path folder_path(folder_name.str());
 
         // Create the folder.
@@ -415,7 +417,7 @@ protected:
     /// Generates a string containing the profiler's heading.
     static std::string create_title()
     {
-        const std::string title(" PROFILED WITH SPEEDO ");
+        const std::string title(" PROFILED WITH TimeProfiler ");
 
         const char fill = '#';
         std::stringstream stream;
@@ -565,21 +567,21 @@ protected:
 ///
 /// Measurement points are added by inserting three underscores \c ___ or three X \c xxx in the code.
 /// The profiler prints its statistics on the console when being destroyed.
-/// The statistics can also be printed by calling Speedo::print_statistics().
+/// The statistics can also be printed by calling TimeProfiler::print_statistics().
 ///
 /// \note Profiling is enabled by default. It can be globally disabled
 /// by simply adding
 /// \code
 /// #define PROFILE 0
 /// \endcode
-/// to the source file before including \c speedo.h.
+/// to the source file before including \c TimeProfiler.h.
 /// \code
 /// #define PROFILE 1
 /// \endcode enables profiling again.
 ///
 /// \note This class is not thread-safe. It is designed to be used with
 /// single-threaded programs.
-class Speedo
+class TimeProfiler
 {
 private:
     std::deque<Checkpoint> checkpoints_;
@@ -588,14 +590,14 @@ private:
 private:
     /// Default constructor.
     /// Inaccessible from outside the class.
-    Speedo()
+    TimeProfiler()
     {
     }
 
     /// Destructor.
     /// Computes and prints the collected statistics and saves them to a
-    /// log file: \c $HOME/.speedo/log.
-    ~Speedo()
+    /// log file: \c $HOME/.TimeProfiler/log.
+    ~TimeProfiler()
     {
         print_statistics();
         save_log();
@@ -603,18 +605,18 @@ private:
 
     /// Copy constructor.
     /// Inaccessible from outside the class.
-    Speedo(const Speedo &speedo);
+    TimeProfiler(const TimeProfiler &TimeProfiler);
 
     /// Assignment operator.
     /// Inaccessible from outside the class.
-    Speedo &operator=(const Speedo &speedo);
+    TimeProfiler &operator=(const TimeProfiler &TimeProfiler);
 
     /// Returns the singleton instance of the profiler.
-    static Speedo &get_instance()
+    static TimeProfiler &get_instance()
     {
         // Create the single instance of this class.
-        static Speedo speedo;
-        return speedo;
+        static TimeProfiler TimeProfiler;
+        return TimeProfiler;
     }
 
     /// Returns a sorted list of the measurements that were made.
@@ -680,7 +682,7 @@ public:
         printer.print();
     }
 
-    /// Saves a log file with the statistics under \c $HOME/.speedo/log.
+    /// Saves a log file with the statistics under \c $HOME/.TimeProfiler/log.
     static void save_log()
     {
 // If profiling is deactivated, abort.
@@ -695,5 +697,6 @@ public:
     }
 };
 
+} // namespace time_profiler
 #endif // #if PROFILE > 0
 #endif // #define TIME_PROFILER_H_
