@@ -1,17 +1,15 @@
 Modified from https://github.com/acschaefer/profiler.git @[acschaefer](https://github.com/acschaefer)
 
-## C++ Time
+## C++ Time Profiler
 
 A simple and lightweight CPU execution time profiler for **single-threaded**
 C++ programs
 
 ### What it does
 
-Measures the CPU execution times elapsed between checkpoints in the code.
-You set the checkpoints. Checkpoints can be hit one or several times.
+Measures the CPU execution times elapsed between checkpoints. Checkpoints can be added to anywhere and can be hit multiple times.
 
-This is the output of the sample program you find in 
-`src/cpp_time_profiler.cpp`:
+Sample output from `src/time_profiler_test.cpp`:
 ```
 ========================================================================================================================
 File                          |Function                                | Line |    Count |  Average [us] |   Overall [us]
@@ -38,13 +36,16 @@ time_profiler_test.cpp        |main                                    |    19| 
 
 ### How to install it
 
-This is a header-only library. To use it, simply copy the header files into your projects and include it.
+This is a header-only library. To use it, simply include the header files in your projects.
+
+Requirement:
+- C++ 17 or higher
 
 ### How to use it
 
-Measurement points are added by inserting `PROFILER_HOOK()` in target lines. Can work with or without semicolomn ';'.
+Measurement points are added by inserting `PROFILER_HOOK()` to target lines. The macro can work with or without semicolon ';'.
 
-The profiler prints its statistics on the console when being destroyed.
+The profiler prints the statistics on the console when being destroyed.
 The statistics can also be printed by calling `TimeProfiler::print_statistics()`.
 
 Profiling is enabled by default. It can be globally disabled by simply adding
@@ -58,7 +59,7 @@ To enable profiling again, write
 ```
 before including time_profiler.h.
 
-You find an example program in `src/time_profiler_test.cpp`.
+You can find an example program in `src/time_profiler_test.cpp`.
 
 ### Note
 
