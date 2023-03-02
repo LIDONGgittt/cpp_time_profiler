@@ -15,7 +15,6 @@
 #include <list>
 #include "speedo/printer.h"
 
-
 /// Simple CPU execution time profiler.
 ///
 /// Measurement points are added by inserting three underscores \c ___ or three X \c xxx in the code.

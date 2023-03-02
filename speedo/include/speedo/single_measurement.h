@@ -3,6 +3,7 @@
 
 // Boost hashing.
 #include <boost/functional/hash.hpp>
+#include <functional>
 
 // Checkpoint class.
 #include "speedo/checkpoint.h"
@@ -35,7 +36,7 @@ public:
     /// of two checkpoints.
     std::size_t get_hash() const
     {
-        boost::hash<std::string> hash;
+        std::hash<std::string> hash;
         return hash(start_checkpoint_.get_file_line()
                     + end_checkpoint_.get_file_line());
     }

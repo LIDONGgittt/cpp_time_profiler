@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 2.8.3)
 project(speedo)
 
 # Find catkin.
-find_package(catkin REQUIRED)
+# find_package(catkin REQUIRED)
 
 # Find Boost.
 find_package(Boost REQUIRED 
@@ -14,10 +14,10 @@ find_package(Boost REQUIRED
 )
 
 # Generate catkin config file so other packages can find Speedo.
-catkin_package(
-  INCLUDE_DIRS include
-  DEPENDS Boost
-)
+# catkin_package(
+#  INCLUDE_DIRS include
+#  DEPENDS Boost
+#)
 
 # Specify locations of header files.
 include_directories(include)
