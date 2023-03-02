@@ -31,5 +31,5 @@ int main()
     function();
     PROFILER_HOOK();
 
-    return EXIT_SUCCESS;
+    return 0;
 }

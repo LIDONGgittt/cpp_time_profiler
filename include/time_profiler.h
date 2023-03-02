@@ -6,10 +6,14 @@
 #define USE_PROFILER 1
 #endif
 
+#if USE_PROFILER
 // Define the placeholders for setting checkpoints.
 #define PROFILER_HOOK() ::time_profiler::TimeProfiler::tick(__FILE__, __LINE__, __FUNCTION__);
 // #define xxx ::time_profiler::TimeProfiler::tick(__FILE__, __LINE__, __FUNCTION__);
 // #define ___ ::time_profiler::TimeProfiler::tick(__FILE__, __LINE__, __FUNCTION__);
+#else
+#define PROFILER_HOOK()
+#endif
 
 #if USE_PROFILER
 
