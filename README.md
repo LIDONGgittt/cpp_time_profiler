@@ -24,16 +24,15 @@ Measurement points are added by inserting `PROFILER_HOOK()` to target lines. The
 The profiler prints the statistics on the console when being destroyed.
 The statistics can also be printed by calling `TimeProfiler::print_statistics()`.
 
-Profiling is enabled by default. It can be globally disabled by simply adding
+Profiling is enabled by default. It can be globally disabled by defining USE_PROFILER to 0:
 ```c
-#define PROFILE 0
+#define USE_PROFILER 0
 ```
-to the source file before including time_profiler.h.
-To enable profiling again, write
+
+Define USE_PROFILER to 1 to enable the profiler:
 ```c
-#define PROFILE 1
+#define USE_PROFILER 1
 ```
-before including time_profiler.h.
 
 You can find an example program in `src/time_profiler_test.cpp`.
 

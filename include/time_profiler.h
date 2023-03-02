@@ -2,8 +2,8 @@
 #define TIME_PROFILER_H_
 
 // Activate profiling if the user did not explicitly deactivate it.
-#ifndef PROFILE
-#define PROFILE 1
+#ifndef USE_PROFILER
+#define USE_PROFILER 1
 #endif
 
 // Define the placeholders for setting checkpoints.
@@ -11,7 +11,7 @@
 // #define xxx ::time_profiler::TimeProfiler::tick(__FILE__, __LINE__, __FUNCTION__);
 // #define ___ ::time_profiler::TimeProfiler::tick(__FILE__, __LINE__, __FUNCTION__);
 
-#if PROFILE > 0
+#if USE_PROFILER
 
 #include <deque>
 #include <map>
@@ -573,11 +573,11 @@ namespace time_profiler
     /// \note Profiling is enabled by default. It can be globally disabled
     /// by simply adding
     /// \code
-    /// #define PROFILE 0
+    /// #define USE_PROFILER 0
     /// \endcode
     /// to the source file before including \c TimeProfiler.h.
     /// \code
-    /// #define PROFILE 1
+    /// #define USE_PROFILER 1
     /// \endcode enables profiling again.
     ///
     /// \note This class is not thread-safe. It is designed to be used with
@@ -650,11 +650,6 @@ namespace time_profiler
         static void tick(
             const std::string &file, int line, const std::string &function)
         {
-// If profiling is deactivated, abort.
-#if PROFILE <= 0
-            return;
-#endif
-
             // Add the measurement point.
             std::deque<Checkpoint> &checkpoints = get_instance().checkpoints_;
             checkpoints.push_back(Checkpoint(file, line, function));
@@ -671,11 +666,6 @@ namespace time_profiler
         /// Prints the statistics.
         static void print_statistics()
         {
-// If profiling is deactivated, abort.
-#if PROFILE <= 0
-            return;
-#endif
-
             // Print the sorted list of all measurements.
             Printer printer;
             printer.add(sort_measurements());
@@ -686,11 +676,6 @@ namespace time_profiler
         /// Saves a log file with the statistics under \c $HOME/.TimeProfiler/log.
         static void save_log()
         {
-// If profiling is deactivated, abort.
-#if PROFILE <= 0
-            return;
-#endif
-
             Printer printer;
             printer.add(sort_measurements());
 
@@ -699,5 +684,5 @@ namespace time_profiler
     };
 
 } // namespace time_profiler
-#endif // #if PROFILE > 0
+#endif // #if USE_PROFILER > 0
 #endif // #define TIME_PROFILER_H_

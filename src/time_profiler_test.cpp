@@ -1,4 +1,4 @@
-#define PROFILE 1
+#define USE_PROFILER 1
 #include "time_profiler.h"
 
 // Example function.
