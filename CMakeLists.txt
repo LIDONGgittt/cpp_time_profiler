@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 3.1)
 project(time_profiler)
 set(CMAKE_CXX_STANDARD 17)
+add_compile_definitions(USE_PROFILER=1)
 
 # Specify locations of header files.
 include_directories(include)

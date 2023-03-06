@@ -1,4 +1,7 @@
+#ifndef USE_PROFILER
 #define USE_PROFILER 1
+#endif
+
 #include "time_profiler.h"
 
 // Example function.
@@ -30,6 +33,8 @@ int main()
 
     function();
     PROFILER_HOOK();
+
+    time_profiler::TimeProfiler::print_statistics();
 
     return 0;
 }
